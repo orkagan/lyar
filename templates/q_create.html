@@ -1,0 +1,32 @@
+{% include header.html %}
+<form method="POST" action="/question/insert">
+	<fieldset>
+		<legend>Ask a Question:</legend>
+		<p>Write in your three statements - two truths and one lie, click the button next to your lie, then submit!
+			<ul>
+				<li>
+					<!--Fix the comment below to put username on question creation-->
+					<!--<label>{% comment {{ User.username }} %}</label>-->
+					
+					<input type ="text" name = "name" value="{{ name }}" placeholder="Topic" required>
+				</li>
+				{% if message is not None %}
+				<li>{{ message }}</li>
+				{% end if %}
+				<li>
+					<input type="radio" name ="lie" value="0" checked="checked">
+					<input type ="text" name="statement_one" value="{{ statement0 }}" placeholder="Statement 1" required>
+				</li>
+				<li>
+					<input type="radio" name ="lie" value="1">
+					<input type ="text" name="statement_two" value="{{ statement1 }}" placeholder="Statement 2" required>
+				</li>
+				<li>
+				<input type="radio" name ="lie" value="2">
+				<input type ="text" name="statement_three" value="{{ statement2 }}" placeholder="Statement 3" required>
+				</li>
+			</ul>
+		<input type="submit" value="Submit">
+	</fieldset>
+</form>
+{% include footer.html %}

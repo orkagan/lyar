@@ -1,0 +1,43 @@
+{% include header.html %}
+<!--<dl>
+	<dt>Total number of questions</dt>
+	<dd>{{ number_of_questions }}</dd>
+	<dt>Total number of votes</dt>
+	<dd>{{ number_of_votes }}</dd>
+	<dt>Number of correct votes</dt>
+	<dd>{{ number_of_correct_votes }}</dd>
+	{% if number_of_questions != 0 %} {% comment Look ma, no divide by zeroes! %}
+	<dt>Average number of votes per question</dt>
+	<dd>{{ "%.1f" % (number_of_votes / number_of_questions) }}</dd>
+	{% end if %}
+	{% if number_of_votes != 0 %}
+	<dt>Percentage of correct votes</dt>
+	<dd>{{ "%.1f" % (number_of_correct_votes / number_of_votes * 100) }}%</dd>
+	{% end if %}
+</dl> -->
+<div class="grid_6 alpha stats">
+	<p>Total number of questions</p>
+	<div class="stats_num">
+		{{ number_of_questions }}
+	</div>
+	<p>Percentage of correct votes</p>
+	<!--<span id="sparkline" class="stats_num"></span>-->
+	<div class="stats_num">
+	{% if number_of_votes != 0 %}
+	{{ "%.1f" % (number_of_correct_votes / number_of_votes * 100) }}
+	{% end if %}
+	</div>
+</div>
+<div class="grid_6 omega stats">
+	<p>Total number of votes</p>
+	<div class="stats_num">
+		{{ number_of_votes }}
+	</div>
+	<p>Average number of votes per question</p>
+	<div class="stats_num">
+		{% if number_of_questions != 0 %} {% comment Look ma, no divide by zeroes! %}
+		{{ "%.1f" % (number_of_votes / number_of_questions) }}
+		{% end if %}
+	</div>
+</div>
+{% include footer.html %}

@@ -1,0 +1,29 @@
+{% include header.html %}
+{% if message is not None %}
+<p class="user_message">{{ message }}</p>
+{% end if %}
+<div id="register">
+<div class="transparent-container">
+	<div class="splashSplit vertical-centered horizontal-centered">
+		<form method="POST" action="/register">
+			<fieldset>
+				<legend>Register</legend>
+					<ul>
+						<li>
+							<input type ="text" name = "username" placeholder="username" required>
+						</li>
+						<li>
+							<input type ="password" name = "password" placeholder="password" required>
+						</li>
+						<li>
+							<input type ="password" name = "confirm_password" placeholder="confirm password" required>
+						</li>
+			<input type="submit">
+			</fieldset>
+		</form>
+	</div>
+</div>
+		<div id="bg"></div>
+		<div id="img"></div>
+</div>
+{% include footer.html %}

@@ -1,0 +1,23 @@
+{% include header.html %}
+<h1>Scoreboard</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Username</th>
+			<th>Score</th>
+		</tr>
+	</thead>
+		<tbody>
+			{% for user in top_users %}
+			<tr>
+				<td>
+					{{ user.username }}
+				</td>
+				<td width="1">
+					{{ user.points }}
+				</td>
+			{% end for %}
+			</tr>
+		</tbody>
+</table>
+{% include footer.html %}

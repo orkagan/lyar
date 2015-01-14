@@ -1,0 +1,35 @@
+{% include header.html %}
+	<h1>Welcome to {{ username }}'s Profile Page!</h1> <br>
+		<h2>User Score:</h2>
+		<div class="stats_num" style="margin: 0; padding: 0;">
+		<span style="font-size: 2em;">{{ points }}</span>
+		</div> <br><br>
+			{% for question in questions %}
+			<section id="profileQuestions">
+				<form method="POST" action="/question/answer">
+					<fieldset>
+						<legend><a href="/question/{{ question.qid }}">{{ question.name }}</a></legend>
+						<ul>
+							<li>{% if current_user.uid != question.creator_id %}
+								<input type="radio" name="user_input" id="OptionOne" value = "0" checked="checked">{% end if %}
+								<label for="OptionOne">{{ question.statement0 }}</label>
+							</li>
+							<li>{% if current_user.uid != question.creator_id %}
+								<input type="radio" name="user_input" id="OptionTwo" value = "1" >{% end if %}
+								<label for="OptionTwo">{{ question.statement1 }}</label>
+							</li>
+							<li>{% if current_user.uid != question.creator_id %}
+								<input type="radio" name="user_input" id="OptionThree" value = "2">{% end if %}
+								<label for="OptionThree">{{ question.statement2 }}</label>
+							</li>
+						</ul>
+						<input type="hidden" name="id" value="{{ question.qid }}">
+						{% if current_user.uid != question.creator_id %}<input type="submit">{% end if %}
+					</fieldset>
+				</form>
+			</section>
+		{% end for %}
+{% include footer.html %}
+
+
+    

@@ -1,0 +1,37 @@
+{% include header.html %}
+	{% if message is not None %}
+	<p class="user_message">{{ message }}</p>
+	{% end if %}
+		<h2>View the Questions:</h2>
+		<p>In each question, select which statement you think is a lie.</p>
+		<section id="questionList">
+		{% for question in questions %}
+			{%if not_mine(current_user.uid, question.qid) %}
+			<form method="POST" action="/question/answer">
+				<fieldset>
+					<legend>
+						<a href="/question/{{ question.qid }}">{{ question.name }}</a> by {{ question.get_creator().username }}:
+						<p style="display: inline-block; margin-left: 12px;"> {{ count_votes(question.qid) }}  vote{{"s" if count_votes(question.qid) != 1 else "" }}</p>
+					</legend>
+					<ul>
+						<li>
+							<input type="radio" name="user_input" id="OptionOne" value = "0" {% if is_checked(current_user.uid, question.qid, 0) %}checked="checked"{% end if%} {{ is_disabled(current_user.uid, question.qid) }}>
+							<label for="OptionOne">{{ question.statement0 }}</label>
+						</li>
+						<li>
+							<input type="radio" name="user_input" id="OptionTwo" value = "1" {% if is_checked(current_user.uid, question.qid, 1) %}checked="checked"{% end if%} {{ is_disabled(current_user.uid, question.qid) }}>
+							<label for="OptionTwo">{{ question.statement1 }}</label>
+						</li>
+						<li>
+							<input type="radio" name="user_input" id="OptionThree" value = "2" {% if is_checked(current_user.uid, question.qid, 2) %}checked="checked"{% end if%} {{ is_disabled(current_user.uid, question.qid) }}>
+							<label for="OptionThree">{{ question.statement2 }}</label>
+						</li>
+					</ul>
+					<input type="hidden" name="id" value="{{ question.qid }}">
+					<input style="border: 1px solid #757575;" type="submit">
+				</fieldset>
+			</form>
+			{% end if %}
+		{% end for %}
+		</section>
+{% include footer.html %}

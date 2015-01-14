@@ -1,0 +1,34 @@
+{% include header.html %}
+	<div id="horiz_cols">
+		<div class="grid_4 splashSplit alpha vertical-centered">
+			<form method="POST" action="/login">
+				<fieldset>
+					<legend>Log In</legend>
+						{% if message is not None %}
+						<p>{{ message }}</p>
+						{% end if %}
+						<ul>
+							<li>
+								<input type="text" name = "username" required placeholder="username">
+							</li>
+							<li>
+								<input type ="password" name = "password" required placeholder="password">
+							</li>
+						</ul>
+				<input type="submit" name="Log In" value="Login"><br>
+				
+				</fieldset>
+			</form>
+		</div>
+		<div class="grid_8 splashSplit omega summary">
+			<p><i class="fa fa-comments-o"></i>   Create elaborate truths or white lies </p>
+			<p><i class="fa fa-users"></i>   View and vote with your friends </p>
+			<p><i class="fa fa-exchange"></i>   Choose your path; liar or lie detector </p>
+			<p><a href="/register">Register</a>. Become a lyar.</p>
+		
+		
+		</div>
+	</div>
+	<div id="bg"></div>
+	<div id="img"></div>
+{% include footer.html %}

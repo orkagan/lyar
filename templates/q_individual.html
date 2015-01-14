@@ -1,0 +1,49 @@
+{% include header.html %}
+
+            <h2>{{ author.username }}&apos;s Question: <u>{{ question.name }}</u> </h2>
+                {% if voted %}
+                    <ul>
+                        <li {% if question.lie == 0 %} class="{% if question.lie == vote.vote %} correct {% else %} incorrect {% end if %}" {% end if %}>
+                         {{ question.statement0 }}, <progress max="100" value="{{ scores[0] }}"></progress>  {{ scores[0]+'%'}} 
+                        </li>
+                        <li {% if question.lie == 1 %} class="{% if question.lie == vote.vote %} correct {% else %} incorrect {% end if %}" {% end if %}>
+                        {{ question.statement1 }}, <progress max="100" value="{{ scores[1] }}"></progress> {{ scores[1]+'%' }} 
+                        </li>
+                        <li {% if question.lie == 2 %} class="{% if question.lie == vote.vote %} correct {% else %} incorrect {% end if %}" {% end if %}>
+                        {{ question.statement2 }}, <progress max="100" value="{{ scores[2] }}"></progress> {{ scores[2]+'%' }}
+                        </li>
+						<p>Total votes: {{ count_votes(question.qid) }}  vote{{"s" if count_votes(question.qid) != 1 else "" }}
+						</ul>
+					
+					{% if vote.vote == question.lie %}
+						<p> You are a human <b>ly</b> detector. </p>
+					{% else %}
+						<p> You have been <b>lyed</b> to... </p> 	
+					{% end if %}
+					<a href="/">Back to questions</a>
+				{% else %}
+                    <p>Select which statement you think is a lie.</p>
+                    <form method="POST" action="/question/answer">
+                        <fieldset>
+                            <ul>
+                                <li>{% if current_user.uid != question.creator_id %}
+                                    <input type="radio" name="user_input" id="OptionOne" value = "0" checked="checked">{% end if %}
+                                    <label for="OptionOne">{{ question.statement0 }}</label>
+                                </li>
+                                <li>{% if current_user.uid != question.creator_id %}
+                                    <input type="radio" name="user_input" id="OptionTwo" value = "1">{% end if %}
+                                    <label for="OptionTwo">{{ question.statement1 }}</label>
+                                </li>
+                                <li>{% if current_user.uid != question.creator_id %}
+                                    <input type="radio" name="user_input" id="OptionThree" value = "2">{% end if %}
+                                    <label for="OptionThree">{{ question.statement2 }}</label>
+                                </li>
+                            </ul>
+                            <input type="hidden" name="id" value="{{ question.qid }}">
+                            {% if current_user.uid != question.creator_id %}<input type="submit">{% end if %}
+                        </fieldset>
+                        </form>
+                {% end if %}
+                    
+                
+{% include footer.html %}

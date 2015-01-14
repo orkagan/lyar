@@ -1,0 +1,121 @@
+
+	
+	
+h1, h2, h3 {
+	font-family:'Raleway', sans-serif; /*probably don't need this here since you have header*/
+	font-weight: bold;
+	margin-top: 20px;
+	margin-left: 10px;
+	}
+	
+h1 { 
+	font-size: 30px;
+	margin-top: 20px;
+	margin-left: 10px;
+	}
+	
+h2{
+	font-size: 20px;
+	}
+
+h3{
+   font-size: 16px;
+	}
+	
+header {
+	padding-top: 35px;
+	padding-left:20px;
+	font-size:45px;
+	font-weight: normal;
+	font-family: 'Raleway', sans-serif;
+	font-style: normal;
+	color: white;
+	background-color: #ff9900;
+	text-align: left;
+	padding-bottom: 15px;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	
+	}
+	
+	article {
+	z-index: 1;
+	position: relative;
+	margin-top: 80px;
+	padding: 10px;
+	color: white;
+	background-color: #303030;
+	width: 400px;
+}
+nav a{
+	text-decoration: none;
+	right: 0px; 
+	color: black;
+	border: 3px solid white;
+	font-size: 30px;
+	padding-left: 5px;
+	padding-right: 5px;
+	float: right;
+}
+nav {
+	margin-right: 50px;
+}
+a:hover {
+	color: #3EACD1;
+	text-decoration: underline;
+	background: none;
+	}
+	
+legend { 
+		font-size: 20px;
+		font-weight: bold;
+		}
+
+label {
+		font-weight: bold;
+		}
+
+		
+ul {
+		line-height: 30px;
+		}
+		
+body{
+		font-family: 'Open Sans', sans-serif;
+		font-size: 14px;
+		line-height: 21px;
+		}
+		
+fieldset{
+		border: none;
+		}
+
+footer{
+	margin-top: 20px;
+	padding-top: 5px;
+	padding-left:20px;
+	font-size: 12px;
+	font-weight: normal;
+	font-family: 'Raleway', sans-serif;
+	font-style: normal;
+	color: white;
+	background-color: #ff9900;
+	text-align: center;
+	padding-bottom: 5px;
+	bottom: 0px;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+}
+
+button {
+    margin-top: 15px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 20px;
+	/*background-color:#e0ccf5 ;*/
+	background-color: #FFEBCC;
+	border-radius: 5px;
+	
+	}
+		
