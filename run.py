@@ -184,11 +184,7 @@ def vote(response):
         
 
 def count_votes(question_id):
-    count_statement0 = len(api.Vote.find_all(question_id, vote=0))
-    count_statement1 = len(api.Vote.find_all(question_id, vote=1))
-    count_statement2 = len(api.Vote.find_all(question_id, vote=2))
-    votes = [count_statement0, count_statement1, count_statement2]
-
+    votes = [len(api.Vote.find_all(question_id, vote=num)) for num in range(3)]
     total = sum(votes)
     return total
 
@@ -212,21 +208,15 @@ def question_handler(response, question_id):
     context =  {'pageName' : 'View Post',"question" : question, "current_user": current_user, "count_votes": count_votes, "author": question_author, 'disabled': ''}
     if len(api.Vote.find_all(qid = question_id, voter_id = current_user.uid)) > 0:
         #count the votes for the statements and store
-        count_statement0 = len(api.Vote.find_all(question_id, vote=0))
-        count_statement1 = len(api.Vote.find_all(question_id, vote=1))
-        count_statement2 = len(api.Vote.find_all(question_id, vote=2))
-        votes = [count_statement0, count_statement1, count_statement2]
-
+        votes = [len(api.Vote.find_all(question_id, vote=num)) for num in range(3)]
         total = sum(votes)
-        
-        score0 = str(round((votes[0] / total)*100))
-        score1 = str(round((votes[1] / total)*100))
-        score2 = str(round((votes[2] / total)*100))
+
+        scores = [str(round((vote / total)*100)) for vote in votes]
 
         context["voted"] = True
         current_vote = api.Vote.find_all(qid = question_id, voter_id = current_user.uid)[0]
         context["vote"] = current_vote
-        context["scores"] = [score0,score1,score2]
+        context["scores"] = scores
     else:
         #user is logged in but has not voted
         context["voted"] = False
@@ -236,7 +226,6 @@ def question_handler(response, question_id):
 
 def profile_handler(response, user_name): 
     current_user = get_user_from_response(response)
-    user_name = str(user_name)
     user_profile = api.User.find(user_name)
     if user_profile is not None:
         print(user_name)
