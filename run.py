@@ -10,7 +10,6 @@ password_regex = re.compile(r"^[ -~]{1,128}$")
 def not_mine(userid, questid):
     return userid != api.Question.find(questid).creator_id
 
-
 def is_disabled(userid, questid):
     all_votes = api.Vote.find_all(voter_id=userid, qid=questid)
     if any(userid == vote.voter_id for vote in all_votes):
@@ -24,7 +23,6 @@ def is_checked(userid, questid, vote):
         return True
     else:
         return False
-
 
 def page_not_found(response):
     response.redirect("/404")
@@ -72,7 +70,7 @@ def create_question(response):
     }))
 
 def insert_new_question(response):
-    #recieves data from sent form and redirects to viewing new question
+    # recieves data from sent form and redirects to viewing new question
     current_user = get_user_from_response(response)
     name = response.get_field("name").strip()
     statement0 = response.get_field("statement_one").strip()
@@ -98,8 +96,8 @@ def insert_new_question(response):
 
     if error_message is None:
         lie = response.get_field("lie")
-        user_id = get_user_from_response(response).uid #the id of the user
-        name = response.get_field("name").strip() #the name of the question
+        user_id = get_user_from_response(response).uid # the id of the user
+        name = response.get_field("name").strip() # the name of the question
         api.Question.create(statement0, statement1, statement2, lie, user_id, name)
         response.redirect("/")
     else:
@@ -111,7 +109,6 @@ def insert_new_question(response):
             "statement2" : statement2,
             "name": name
         }))
-
 
 def login(response):
     current_user = get_user_from_response(response)
@@ -145,12 +142,10 @@ def login(response):
             "message": "Username or password incorrect.",
             "current_user": current_user
         }))
-    
-        
 
 def logout(response):
     response.clear_cookie("user_id")
-    #response.write("You have logged out.")
+    # response.write("You have logged out.")
     response.redirect("/")
 
 # Input: Response object
@@ -257,7 +252,7 @@ def question_handler(response, question_id):
     # the regex ensures that the question_id can't be negative
     current_user = get_user_from_response(response)
     if current_user is None:
-        #user is not logged in
+        # user is not logged in
         response.redirect('/login')
         return
 
@@ -273,7 +268,7 @@ def question_handler(response, question_id):
         return
     question_author = question.get_creator()
     
-    #only display the voting results if the user has voted
+    # only display the voting results if the user has voted
     context =  {
         'pageName': 'View Post',
         "question" : question,
@@ -283,7 +278,7 @@ def question_handler(response, question_id):
         'disabled': ''
     }
     if len(api.Vote.find_all(qid = question_id, voter_id = current_user.uid)) > 0:
-        #count the votes for the statements and store
+        # count the votes for the statements and store
         votes = [len(api.Vote.find_all(question_id, vote=num)) for num in range(3)]
         total = sum(votes)
 
@@ -294,7 +289,7 @@ def question_handler(response, question_id):
         context["vote"] = current_vote
         context["scores"] = scores
     else:
-        #user is logged in but has not voted
+        # user is logged in but has not voted
         context["voted"] = False
     print(context)
     response.write(template.render_page("q_individual.html", context ))
@@ -339,7 +334,7 @@ server = Server()
 
 # This says that localhost:8888/ should display the result of the
 # "index" function.
-#server.register("/", index)
+# server.register("/", index)
 server.register("/", view_question)
 server.register("/about", about)
 server.register("/question/create", create_question)

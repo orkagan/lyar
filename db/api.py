@@ -7,7 +7,7 @@ if os.path.exists('db'):
 else:
     con = sqlite3.connect('database.db')
 
-#Class for the question table
+# Class for the question table
 class Question:
     def __init__(self, qid, statement0, statement1, statement2, lie, creator_id, name=''):
         self.qid = qid
@@ -22,7 +22,7 @@ class Question:
     def get_creator(self):
         return User.find(uid=self.creator_id)
 
-# Function for creating questions in the database.
+    # Function for creating questions in the database.
     @classmethod
     def create(cls, statement0, statement1, statement2, lie, creator_id, name=''):
         id_find = con.execute('''SELECT id FROM question ORDER BY id DESC LIMIT 1;''')
@@ -32,7 +32,7 @@ class Question:
         con.commit()
         return cls(qid, statement0, statement1, statement2, lie, creator_id, name)
 
-# Function for finding questions in the database, run with the class.
+    # Function for finding questions in the database, run with the class.
     @classmethod
     def find(cls, qid):
         cur = con.execute('''SELECT * FROM question WHERE id=?''', (qid, ))
@@ -42,13 +42,13 @@ class Question:
         qid, statement0, statement1, statement2, lie, creator_id, name = locate
         return cls(qid, statement0, statement1, statement2, lie, creator_id, name)
 
-# Function for deleting questions in the database, must run with a question object e.g. (quest_obj.delete()).
+    # Function for deleting questions in the database, must run with a question object e.g. (quest_obj.delete()).
     def delete(self):
-        cur = con.execute('''DELETE FROM question WHERE id=?;''', (self.qid, ))#must be a tuple
+        cur = con.execute('''DELETE FROM question WHERE id=?;''', (self.qid, ))# must be a tuple
         con.commit()
         return True
 
-#Function to find all questions if no argument is supplied. If an argument is supplied (creator_id) it acts as a filter to find specific entries based on creator_id.
+    # Function to find all questions if no argument is supplied. If an argument is supplied (creator_id) it acts as a filter to find specific entries based on creator_id.
     @classmethod
     def find_all(self, creator_id=None):
         query = con.execute('''SELECT * FROM question WHERE creator_id=?  ''', (creator_id,))
@@ -68,7 +68,7 @@ class Question:
     def __repr__(self):
         return 'id: {}, s0: {}, s1: {}, s2: {}, lie: {}, name: {}, creator: {}'.format(self.qid, self.statement0, self.statement1, self.statement2, self.lie, self.name, self.creator_id)
 
-#Class for the vote table
+# Class for the vote table
 class Vote:
     def __init__(self, vid, qid, vote, voter_id):
         self.vid = vid
@@ -76,7 +76,7 @@ class Vote:
         self.vote = vote
         self.voter_id = voter_id
         
-    #The function to create a vote and add it to the database, returns a vote object
+    # The function to create a vote and add it to the database, returns a vote object
     @classmethod
     def create(self, qid, vote, voter_id):
         id_find = con.execute('''SELECT id FROM vote ORDER BY id DESC LIMIT 1;''')
@@ -86,7 +86,7 @@ class Vote:
         con.commit()
         return Vote(vid, qid, vote, voter_id)
     
-    #The function to find a vote based on it's vid (vote id) which is unique returns a vote object
+    # The function to find a vote based on it's vid (vote id) which is unique returns a vote object
     @classmethod
     def find(self, vid):
         query = con.execute('''SELECT * FROM vote WHERE ? = id;''', (vid,))
@@ -95,14 +95,13 @@ class Vote:
             return None
         return Vote(row[0], row[1], row[2], row[3])
     
-    #The function to delete a vote object from the database, run it with a vote object
+    # The function to delete a vote object from the database, run it with a vote object
     def delete(self):
         con.execute('''DELETE FROM vote WHERE ? = id;''', (self.vid,))
         con.commit()
         return True
     
-    #The function to find all votes if no argument is supplied. If an argument is supplied, it is treated as a filter to find specific entries. 
-    
+    # The function to find all votes if no argument is supplied. If an argument is supplied, it is treated as a filter to find specific entries. 
     @classmethod
     def find_all(self, qid=None, vote=None, voter_id=None):
         filters = []
@@ -148,7 +147,6 @@ class Vote:
 
 # Class for the user table
 class User:
-
     def __init__(self, uid, username, password, points = 0):
         self.uid = uid
         self.username = username
@@ -195,16 +193,16 @@ class User:
         uid, username, password, points = all_result
         return cls(uid, username, password, points)
 
-    #Function for adding points to the user object
+    # Function for adding points to the user object
     def add_points(self, points = 1):
         self.points += points
-        #print("THIS SHOULD HAPPEN")
-        #print(self.points)
+        # print("THIS SHOULD HAPPEN")
+        # print(self.points)
         cur = con.execute('''UPDATE user SET points = ? WHERE id = ?;''', (self.points, self.uid))
         con.commit()
         cur = con.execute('''SELECT points FROM user WHERE id = ?''', (self.uid, ))
         row = cur.fetchone()[0]
-        #print(row)
+        # print(row)
         return row
 
     # Function for deleting users in the database.
@@ -240,7 +238,6 @@ class User:
             output.append(out)
         return output
 
-        
     def update(self, username=None, password=None):
         filters = []
         sql_string = []

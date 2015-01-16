@@ -8,14 +8,13 @@ class ParseException(Exception):
     pass
 
 def split_tokens(s):
-
     r = re.compile(r'({[{%].*?[%}]})')
     return r.split(s)
 
 def make_dict(label, data):
-    return {'label' : label,
-            'data'  : data
-            }
+    return {'label': label,
+            'data': data
+           }
 
 
 def id_token(token):
@@ -74,7 +73,6 @@ def parse(tokens, parent=None, upto=0, parent_type=None):
             includePath = os.path.join(DIRECTORY, current_token['data']['path'])
             with open(includePath) as f:
                 parse(lexer(f.read()), parent, 0, parent_type) #new file, therefore upto = 0
-        
         elif label == 'if':
             new_node = IfNode(current_token['data'])
             parent.add_child(new_node)
@@ -87,7 +85,6 @@ def parse(tokens, parent=None, upto=0, parent_type=None):
                 upto += 1
                 elseGroup, new_pos = parse(tokens, new_node.false_node, upto, "else")
                 upto = new_pos
-
         elif label == "else":
             if parent_type == "if":
                 return parent, upto
@@ -99,8 +96,6 @@ def parse(tokens, parent=None, upto=0, parent_type=None):
                 return parent, upto
             else:
                 raise ParseException('Found "end if" without corresponding "if" statement')
-            #consider unmatched if
-
         elif label == 'for':
             new_node = ForNode(current_token['data']['iterable'], current_token['data']['variable'])
             parent.add_child(new_node)
@@ -115,13 +110,10 @@ def parse(tokens, parent=None, upto=0, parent_type=None):
                 return parent, upto
             else:
                 raise ParseException('Found "end for" without corresponding "for" statement')
-
         elif label == 'comment':
             upto += 1
             new_node = CommentNode(current_token['data'])
             parent.add_child(new_node)
-
-
 
     return parent, upto
 

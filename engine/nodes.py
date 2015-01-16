@@ -1,7 +1,6 @@
 import html
 
 class Node:
-
     def __init__(self):
         pass
 
@@ -80,7 +79,6 @@ class GroupNode(Node):
         return "GroupNode: " + str(self.children)
 
 class IfNode(Node):
-
     def __init__(self, predicate):
         self.predicate = predicate
         self.true_node = GroupNode()
