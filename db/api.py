@@ -1,14 +1,11 @@
 import sqlite3
 import os.path
-import hashlib
-import binascii
+from . import passwordhash
 
 if os.path.exists('db'):
     con = sqlite3.connect('db/database.db')
 else:
     con = sqlite3.connect('database.db')
-
-salt = b'xisH44wduw3VWC8TBiRK'
 
 #Class for the question table
 class Question:
@@ -160,9 +157,7 @@ class User:
 
     @classmethod
     def hash_password(cls, password):
-        bin_password = password.encode('ascii')
-        dk = hashlib.pbkdf2_hmac('sha256', bin_password, salt, 100000)
-        return binascii.hexlify(dk)
+        return passwordhash.hash_password(password)
 
     # Function for creating users in the database.
     @classmethod

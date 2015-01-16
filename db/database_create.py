@@ -1,4 +1,4 @@
-import sqlite3, os, sys, os.path
+import sqlite3, os, sys, os.path, re, passwordhash
 if os.path.isfile('database.db'):
     try:
         os.unlink('database.db')
@@ -10,6 +10,10 @@ cur = conn.cursor()
 with open('init.sql') as init:
     cur.executescript(init.read())
 with open('dummy_data.sql') as data:
-    cur.executescript(data.read())
+    sqlfile = data.read()
+    hashed = re.sub(r"HASH\([\"'](.+?)[\"']\)",
+        lambda x: '"{}"'.format(passwordhash.hash_password(x.group(1)).decode("ascii")),
+        sqlfile)
+    cur.executescript(hashed)
 cur.close()
 conn.close()

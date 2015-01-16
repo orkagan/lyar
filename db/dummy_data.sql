@@ -25,8 +25,10 @@ INSERT INTO vote VALUES (15, 6, 0, NULL);
 INSERT INTO vote VALUES (16, 6, 2, NULL);
 INSERT INTO vote VALUES (17, 6, 1, NULL);
 
-INSERT INTO user VALUES (NULL, "bruce", "c61ad5f5e194759e77bb92c810c5f8a2e40f428880fe3f33db1b4e91451459c7", 0); --  "tonotbe"
-INSERT INTO user VALUES (NULL, "alex", "57ae88aa91a80d8dd19d35331cf97575f1b27320ecf5c962bba616df4fccf2f6", 0); --  "gags"
-INSERT INTO user VALUES (NULL, "deanna", "fda745cf01d7b51c45a54ff459284181f03ef713629fc5f3c6cb3e9a11905189", 0); --  "traitor"
-INSERT INTO user VALUES (NULL, "aaron", "dfa27cb163c1b04455921693bbc6c27b776ecfa5385060ec5b6b6a8fec212b09", 0); --  "mafiatalk"
-INSERT INTO user VALUES (NULL, "greta", "9ead6dd5fc10622604c6ba9fb62e361dd40dd243ee47e7fb992a8f61eb0e0387", 0); --  "securecookie"
+-- ghetto way of hashing passwords on creation of database
+-- refer to database_create for the actual hashing
+INSERT INTO user VALUES (NULL, "bruce", HASH("tonotbe"), 0);
+INSERT INTO user VALUES (NULL, "alex", HASH("gags"), 0);
+INSERT INTO user VALUES (NULL, "deanna", HASH("traitor"), 0);
+INSERT INTO user VALUES (NULL, "aaron", HASH("mafiatalk"), 0);
+INSERT INTO user VALUES (NULL, "greta", HASH("securecookie"), 0);
