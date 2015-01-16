@@ -51,50 +51,50 @@ def lexer(s):
     return tokens
 
 
-def parse(tokens, parent=None, upto=0, parentType=None):
+def parse(tokens, parent=None, upto=0, parent_type=None):
     if parent is None:
         parent = GroupNode()
     while upto < len(tokens):
-        currentToken = tokens[upto]
-        label = currentToken['label'] 
+        current_token = tokens[upto]
+        label = current_token['label'] 
         if label == 'python':
-            newNode = PythonNode(currentToken['data'])
+            new_node = PythonNode(current_token['data'])
             upto += 1
-            parent.addChild(newNode)
+            parent.add_child(new_node)
         elif label == 'safe':
-            newNode = SafeNode(currentToken['data'])
+            new_node = SafeNode(current_token['data'])
             upto += 1
-            parent.addChild(newNode)
+            parent.add_child(new_node)
         elif label == 'text':
-            newNode = TextNode(currentToken['data'])
+            new_node = TextNode(current_token['data'])
             upto += 1
-            parent.addChild(newNode)
+            parent.add_child(new_node)
         elif label == 'include':
             upto += 1
-            includePath = os.path.join(DIRECTORY, currentToken['data']['path'])
+            includePath = os.path.join(DIRECTORY, current_token['data']['path'])
             with open(includePath) as f:
-                parse(lexer(f.read()), parent, 0, parentType) #new file, therefore upto = 0
+                parse(lexer(f.read()), parent, 0, parent_type) #new file, therefore upto = 0
         
         elif label == 'if':
-            newNode = IfNode(currentToken['data'])
-            parent.addChild(newNode)
+            new_node = IfNode(current_token['data'])
+            parent.add_child(new_node)
             upto += 1
-            ifGroup, newPos = parse(tokens, newNode.trueNode, upto, "if")
-            upto = newPos
-            currentToken = tokens[upto]
-            label = currentToken['label']
+            if_group, new_pos = parse(tokens, new_node.true_node, upto, "if")
+            upto = new_pos
+            current_token = tokens[upto]
+            label = current_token['label']
             if label == "else":
                 upto += 1
-                elseGroup, newPos = parse(tokens, newNode.falseNode, upto, "else")
-                upto = newPos
+                elseGroup, new_pos = parse(tokens, new_node.false_node, upto, "else")
+                upto = new_pos
 
         elif label == "else":
-            if parentType == "if":
+            if parent_type == "if":
                 return parent, upto
             else:
                 raise ParseException('Found "else" without corresponding "if" statement')
         elif label == 'end if':
-            if parentType in ("if", "else"):
+            if parent_type in ("if", "else"):
                 upto += 1
                 return parent, upto
             else:
@@ -102,15 +102,15 @@ def parse(tokens, parent=None, upto=0, parentType=None):
             #consider unmatched if
 
         elif label == 'for':
-            newNode = ForNode(currentToken['data']['iterable'], currentToken['data']['variable'])
-            parent.addChild(newNode)
+            new_node = ForNode(current_token['data']['iterable'], current_token['data']['variable'])
+            parent.add_child(new_node)
             upto += 1
-            forGroup, newPos = parse(tokens, newNode.loopBlock, upto, "for")
-            upto = newPos
-            currentToken = tokens[upto]
-            label = currentToken['label']
+            for_group, new_pos = parse(tokens, new_node.loop_block, upto, "for")
+            upto = new_pos
+            current_token = tokens[upto]
+            label = current_token['label']
         elif label == 'end for':
-            if parentType == 'for':
+            if parent_type == 'for':
                 upto += 1
                 return parent, upto
             else:
@@ -118,16 +118,16 @@ def parse(tokens, parent=None, upto=0, parentType=None):
 
         elif label == 'comment':
             upto += 1
-            newNode = CommentNode(currentToken['data'])
-            parent.addChild(newNode)
+            new_node = CommentNode(current_token['data'])
+            parent.add_child(new_node)
 
 
 
     return parent, upto
 
-def render_page(fileName, context):
-    filePath = os.path.join(DIRECTORY, fileName)
-    with open(filePath) as f:
+def render_page(file_name, context):
+    file_path = os.path.join(DIRECTORY, file_name)
+    with open(file_path) as f:
         return parse(lexer(f.read()))[0].render(context)
 
 # if __name__ == '__main__':

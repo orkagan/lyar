@@ -65,12 +65,12 @@ class GroupNode(Node):
             self.children = []
 
     def render(self, context):
-        finalStr = ""
+        final_str = ""
         for child in self.children:
-            finalStr += child.render(context)
-        return finalStr
+            final_str += child.render(context)
+        return final_str
 
-    def addChild(self, node):
+    def add_child(self, node):
         self.children.append(node)
 
     def __repr__(self):
@@ -83,14 +83,14 @@ class IfNode(Node):
 
     def __init__(self, predicate):
         self.predicate = predicate
-        self.trueNode = GroupNode()
-        self.falseNode = GroupNode()
+        self.true_node = GroupNode()
+        self.false_node = GroupNode()
 
-    def addTrueChild(self, node):
-        self.trueNode.addChild(node)
+    def add_true_child(self, node):
+        self.true_node.add_child(node)
 
-    def addFalseChild(self, node):
-        self.falseNode.addChild(node)
+    def add_false_child(self, node):
+        self.false_node.add_child(node)
 
     def render(self, context):
         try:
@@ -99,24 +99,24 @@ class IfNode(Node):
             raise NameError("Required variable in if predicate not defined in context. Context is {}".format(context))
         else:
             if result:
-                return self.trueNode.render(context)
+                return self.true_node.render(context)
             else:
-                return self.falseNode.render(context)
+                return self.false_node.render(context)
 
     def __repr__(self):
-        left = '...' if self is self.trueNode else str(self.trueNode)
-        right = '...' if self is self.falseNode else str(self.falseNode)
+        left = '...' if self is self.true_node else str(self.true_node)
+        right = '...' if self is self.false_node else str(self.false_node)
         return 'IfNode({}, {}, {})'.format(id(self), left, right)
 
 
 class ForNode(Node):
     def __init__(self, iterable, variable):
-        self.loopBlock = GroupNode()
+        self.loop_block = GroupNode()
         self.iterable = iterable
         self.variable = variable
 
-    def addLoopChild(self, node):
-        self.loopBlock.addChild(node)
+    def add_loop_child(self, node):
+        self.loop_block.add_child(node)
 
     def render(self, context):
         try:
@@ -126,9 +126,9 @@ class ForNode(Node):
         else:
             out = ""
             for item in iterating:
-                newContext = dict(context) # new instance
-                newContext[self.variable] = item
-                out += self.loopBlock.render(newContext)
+                new_context = dict(context) # new instance
+                new_context[self.variable] = item
+                out += self.loop_block.render(new_context)
             return out
 
 class CommentNode(Node):
