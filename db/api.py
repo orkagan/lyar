@@ -39,8 +39,8 @@ class Question:
         locate = cur.fetchone()
         if locate == None:
             return None
-        qid, statement0, statement1, statement2, lie, creator_id, name = locate
-        return cls(qid, statement0, statement1, statement2, lie, creator_id, name)
+        else:
+            return cls(*locate)
 
     # Function for deleting questions in the database, must run with a question object e.g. (quest_obj.delete()).
     def delete(self):
@@ -51,19 +51,21 @@ class Question:
     # Function to find all questions if no argument is supplied. If an argument is supplied (creator_id) it acts as a filter to find specific entries based on creator_id.
     @classmethod
     def find_all(self, creator_id=None):
-        query = con.execute('''SELECT * FROM question WHERE creator_id=?  ''', (creator_id,))
         if creator_id is None:
             query = con.execute('''SELECT * FROM question''')
+        else:
+            query = con.execute('''SELECT * FROM question WHERE creator_id=?  ''', (creator_id,))
         all_rows = query.fetchall()
-        return [Question(row[0], row[1], row[2], row[3], row[4], row[5], row[6]) for row in all_rows]
+        return [Question(*row) for row in all_rows]
 
     @classmethod
     def find_all_home_specific(self, creator_id=None):
-        query = con.execute('''SELECT * FROM question WHERE creator_id = ?;''', (creator_id,))
         if creator_id is None:
             query = con.execute('''SELECT * FROM question ORDER BY id DESC;''')
+        else:
+            query = con.execute('''SELECT * FROM question WHERE creator_id = ?;''', (creator_id,))
         all_rows = query.fetchall()
-        return [Question(row[0], row[1], row[2], row[3], row[4], row[5], row[6]) for row in all_rows]
+        return [Question(*row) for row in all_rows]
         
     def __repr__(self):
         return 'id: {}, s0: {}, s1: {}, s2: {}, lie: {}, name: {}, creator: {}'.format(self.qid, self.statement0, self.statement1, self.statement2, self.lie, self.name, self.creator_id)
@@ -93,7 +95,7 @@ class Vote:
         row = query.fetchone()
         if row is None:
             return None
-        return Vote(row[0], row[1], row[2], row[3])
+        return Vote(*row)
     
     # The function to delete a vote object from the database, run it with a vote object
     def delete(self):
@@ -127,7 +129,7 @@ class Vote:
         all_result = cur.fetchall()
         votes = []
         for result in all_result:
-            votes.append(Vote(result[0], result[1], result[2], result[3]))
+            votes.append(Vote(*result))
         return votes
 
     @classmethod
@@ -190,8 +192,8 @@ class User:
         all_result = cur.fetchone()
         if all_result == None:
             return None
-        uid, username, password, points = all_result
-        return cls(uid, username, password, points)
+        else:
+            return cls(*all_result)
 
     # Function for adding points to the user object
     def add_points(self, points = 1):
@@ -233,8 +235,7 @@ class User:
         rows = best_users.fetchall()
         output = []
         for u in rows:
-            uid, username, password, points = u
-            out = cls(uid, username, password, points)
+            out = cls(*u)
             output.append(out)
         return output
 
