@@ -4,23 +4,8 @@ import db.api as api
 import re
 
 
-login_info = {}
-users = {"bruce":{"user_id":1, "password":"tonotbe"},
-         "alex":{"user_id":2, "password":"gags"},
-         "deanna":{"user_id":3, "password":"traitor"},
-         "aaron":{"user_id":4, "password":"mafiatalk"},
-         "greta":{"user_id":5, "password":"securecookie"} }
 username_regex = re.compile(r"^[a-zA-Z0-9\-_]{3,20}$")
 password_regex = re.compile(r"^[ -~]{1,128}$")
-# Define a function which returns the HTML for a page.
-#def index(response):
-   # user_id = response.get_secure_cookie("user_id")
-   # if user_id == None:
-   #    response.write("Hello World")
-   # else:
-   #    response.write("Hello, " + str(user_id))
-
-# A function for another page, which shows something else.
 
 def not_mine(userid, questid):
     return userid != api.Question.find(questid).creator_id
@@ -126,15 +111,6 @@ def login(response):
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You are already logged in!'}))
         
 
-        '''login_info["username"] = username
-        login_info["password"] = password
-        if login_info["username"] in users and login_info["password"] == users[login_info["username"]]["password"]:
-            print("Login successful.")
-            response.set_secure_cookie("user_id", str(users[login_info["username"]]["user_id"]))
-            response.redirect("/")'''
-        
-    
-    
 def logout(response):
     response.clear_cookie("user_id")
     #response.write("You have logged out.")
@@ -191,10 +167,6 @@ def vote(response):
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You cannot vote on the question. (You are the author)'}))
     elif current_user is not None and len(api.Vote.find_all(qid = question_id, voter_id = current_user.uid)) == 0:
         vote = api.Vote.create(question_id, int(user_input), current_user.uid)
-#        print(vote.vote)
-#        print(question.lie)
-#        if vote.vote == question.lie:
-#            current_user.add_points()
         response.redirect('/question/' + str(question_id))
         print(vote.vote)
         print(question.lie)
