@@ -1,13 +1,17 @@
 # Contributors
 ## Students
 ### Jamie
-Worked on the core of the templating engine for a bit, most notably documenting it for all other team members. (and more?)
+Member of the core templating team.   
+Documented templating engine for all other team members.
 ### Deanna
-No description added. Please add one!
+Member of the original Tornado team.  
+Implemented cookies, structured the Tornado run.py file.  
+Edited final presentation video.
 ### Jonathan
 No description added. Please add one!
 ### [Michael](https://github.com/mcpower)
-Worked on the core of the templating engine and the extras. Helped out with other various features here and there and helped others when they needed help.
+Member of the core and extra templating team.  
+Added other various features and helped others.
 ### Chris
 No description added. Please add one!
 ### Jozey
@@ -17,17 +21,20 @@ No description added. Please add one!
 ### Maxwell
 No description added. Please add one!
 ### Kosta
-Worked on the core of the templating engine and the extras. (and more?)
+Member of the core and extra templating team.  
+(probably did more!)
 ### Tommy
 No description added. Please add one!
 ### Greta
-Worked on the design of the website? (and more?)
+Member of the original Tornado team.  
+Worked on the design and CSS, implemented cookies, structured the Tornado run.py file.
 ### Jackson
 No description added. Please add one!
 ### Alex
-Worked on the core of the templating engine for a bit. (and more?)
-### Aaron
-Worked on the design and CSS. (and more?)
+Member of the original design team, created wireframes.
+### [Aaron](https://github.com/AaronTakizad)
+Member of the original Tornado team.  
+Worked on the design and CSS, implemented cookies, structured the Tornado run.py file.
 ### Fiona
 No description added. Please add one!
 ### Bryan
