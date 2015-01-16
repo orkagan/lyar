@@ -58,14 +58,15 @@ header {
 	/*background-color: #34495e;*/
 	position:relative;
 	margin-bottom: 70px;
-	position: relative;
+	top: 0px;
+	position: fixed;
 	width: 100%;
 	min-width: 960px;
 	height:60px;
 	}
 
 .headerBg {
-background: linear-gradient(to bottom, rgba(117,117,117,0.4) 0%,rgba(0,0,0,0.2) 100%);
+background: linear-gradient(to bottom, rgba(117,117,117,1) 20%,rgba(0,0,0,0.3) 100%);
 }
 
 .headerBg > div {
@@ -74,7 +75,7 @@ background: linear-gradient(to bottom, rgba(117,117,117,0.4) 0%,rgba(0,0,0,0.2) 
 
 header h1 {
 	/*font-size:45px;*/
-	font-size: 35px;
+	font-size: 30px;
 	font-weight: 300;
 	color: #fff;
 }
@@ -86,42 +87,80 @@ header h1:hover {
 
 nav {
 	position: absolute;
-	top:25px;
+	top:20px;
 	text-align: right;
+	font-size: 20px;
 }
 nav a{
 	text-decoration: none;
-	color: black;
-	font-size: 24px;
 	display: inline-block;
-	padding: 8px 8px 0 8px;
 	color: #fff;
 }
-
-a {
-	color: #555
+nav ul{
+	display: inline;
+ 	list-style: none;
+}
+nav ul li{
+	position: relative;
+	display: inline-block;
+	text-decoration: none;
+	color: #fff;
+	cursor: pointer;
+	padding: 8px 8px 8px 8px;
+}
+nav ul li:hover {
+	color: #fff;
+}
+nav ul li ul {
+	position: absolute;
+	visibility: hidden;
+	display: none;
+	text-align: left;
+	list-style: none;
+	color: white;
+	padding: 0px;
+	padding-top: 5px;
+	padding-left: 5px;
+	width: 140px;
+	background: rgba(117,117,117,0.7);
+}
+nav ul li ul li {
+	margin-left: 0px;
+	text-align: left;
+}
+nav ul li:hover {
+	color:#47637F;
+	transition: color 0.1s linear;
+}
+nav ul li:hover ul {
+	display: block;
+	visibility: visible;
 }
 
-a:hover {
-	text-decoration: underline;
-	}
+nav a:hover {
+	color:#47637F;
+	transition: color 0.1s linear;
+}
 
 legend, legend p { 
-		font-size: 20px;
-		font-weight: bold;
-		margin: 0;
-		}
+	font-size: 20px;
+	font-weight: bold;
+	margin: 0;
+}
 
 label {
-		font-weight: bold;
-		}
+	font-weight: bold;
+}
 
 .user_message {
 	color: red;
 }
+a {
+	color: #555
+}
 ul {
-		line-height: 30px;
-		}
+	line-height: 30px;
+}
 
 form ul {
 	margin: 10px 0;
@@ -133,11 +172,12 @@ main {
 	overflow: auto;
 	flex: 1;
 	padding: 0 20px;
+	margin-top: 100px;
 }
 		
 fieldset {
-		border: none;
-		}
+	border: none;
+}
 
 footer {
 	/*background: linear-gradient(to bottom, rgba(117,117,117,0.2) 0%,rgba(0,0,0,0.4) 100%);
@@ -149,11 +189,11 @@ footer {
 	height: 40px;
 }
 footer p {
-margin: 0 auto;
-padding: 12px;
-font-size: 14px;
-color: #e3e3e3;
-text-align: center;
+	margin: 0 auto;
+	padding: 12px;
+	font-size: 14px;
+	color: #e3e3e3;
+	text-align: center;
 }
 
 button {
