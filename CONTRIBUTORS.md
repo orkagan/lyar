@@ -3,7 +3,9 @@
 ### Jamie
 Worked on the core of the templating engine for a bit, most notably documenting it for all other team members. (and more?)
 ### Deanna
-No description added. Please add one!
+Member of the original Tornado team.
+Implemented cookies, structured the Tornado run.py file.
+Edited final presentation video.
 ### Jonathan
 No description added. Please add one!
 ### [Michael](https://github.com/mcpower)
@@ -21,13 +23,15 @@ Worked on the core of the templating engine and the extras. (and more?)
 ### Tommy
 No description added. Please add one!
 ### Greta
-Worked on the design of the website? (and more?)
+Member of the original Tornado team.
+Worked on the design and CSS, implemented cookies, structured the Tornado run.py file.
 ### Jackson
 No description added. Please add one!
 ### Alex
-Worked on the core of the templating engine for a bit. (and more?)
+Member of the original design team, created wireframes.
 ### Aaron
-Worked on the design and CSS. (and more?)
+Member of the original Tornado team.
+Worked on the design and CSS, implemented cookies, structured the Tornado run.py file.
 ### Fiona
 No description added. Please add one!
 ### Bryan
