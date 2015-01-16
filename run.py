@@ -20,15 +20,9 @@ def is_disabled(userid, questid):
 
 def is_checked(userid, questid, vote):
     user_vote = api.Vote.find_all(qid=questid, voter_id=userid)
-    if len(user_vote) > 0:
-        print('vote cast. input', vote, 'user', user_vote[0].vote)
-        if str(user_vote[0].vote) == str(vote):
-            print("yussss")
-            return True
-        else:
-            return False
+    if len(user_vote) > 0 and str(user_vote[0].vote) == str(vote):
+        return True
     else:
-        print("not checked")
         return False
 
 
@@ -93,22 +87,26 @@ def insert_new_question(response):
 
 def login(response):
     current_user = get_user_from_response(response)
-    if current_user is None:
-        username = response.get_field("username")
-        password = response.get_field("password")
-        if username is None or password is None:
-            response.write(template.render_page("login.html", {"message": None, "current_user": current_user}))
-        else:
-            user = api.User.find(username)
-            if user is not None and api.User.hash_password(password) == user.password:
-                print("Login successful.")
-                response.set_secure_cookie("user_id", str(user.uid))
-                response.redirect("/")    
-            else:
-                print("Login failed. Incorrect username or password.")
-                response.write(template.render_page("login.html", {"message": "Username or password incorrect.", "current_user": current_user}))
-    else:
+    if current_user is not None:
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You are already logged in!'}))
+        return
+
+    username = response.get_field("username")
+    password = response.get_field("password")
+
+    if username is None or password is None:
+        response.write(template.render_page("login.html", {"message": None, "current_user": current_user}))
+        return
+
+    user = api.User.find(username)
+    if user is not None and api.User.hash_password(password) == user.password:
+        print("Login successful.")
+        response.set_secure_cookie("user_id", str(user.uid))
+        response.redirect("/")    
+    else:
+        print("Login failed. Incorrect username or password.")
+        response.write(template.render_page("login.html", {"message": "Username or password incorrect.", "current_user": current_user}))
+    
         
 
 def logout(response):
@@ -129,35 +127,37 @@ def get_user_from_response(response):
 
 def register(response):
     current_user = get_user_from_response(response)
-    if current_user is None:
-        username = response.get_field("username")
-        password = response.get_field("password")
-        confirm_password = response.get_field("confirm_password")
-        
-        if username is None or password is None or confirm_password is None:
-            response.write(template.render_page("register.html", {'message': None, "current_user": current_user}))
-            return
-
-        error_message = None
-        if username == '' or password == '' or confirm_password == '':
-            error_message = 'Username or password was empty!'
-        elif api.User.find(username):
-            error_message = 'Username is taken already!'
-        elif password != confirm_password:
-            error_message = 'Passwords do not match!'
-        elif re.match(username_regex, username) is None:
-            error_message = 'Usernames must be between 3 to 16 characters in length and must have alphanumeric characters, dashes or underscores.'
-        elif re.match(password_regex, password) is None:
-            error_message = 'Passwords must be between 1 to 128 characters in length and must have printable ASCII characters.'
-        
-        if error_message is None:
-            user = api.User.create(username, api.User.hash_password(password).decode("ascii"))
-            response.set_secure_cookie("user_id", str(user.uid))
-            response.redirect("/")
-        else:
-            response.write(template.render_page("register.html", {'message': error_message, "current_user": current_user}))
-    else:
+    if current_user is not None:
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You are already logged in!'}))
+        return
+
+    username = response.get_field("username")
+    password = response.get_field("password")
+    confirm_password = response.get_field("confirm_password")
+    
+    if username is None or password is None or confirm_password is None:
+        response.write(template.render_page("register.html", {'message': None, "current_user": current_user}))
+        return
+
+    error_message = None
+    if username == '' or password == '' or confirm_password == '':
+        error_message = 'Username or password was empty!'
+    elif api.User.find(username):
+        error_message = 'Username is taken already!'
+    elif password != confirm_password:
+        error_message = 'Passwords do not match!'
+    elif re.match(username_regex, username) is None:
+        error_message = 'Usernames must be between 3 to 16 characters in length and must have alphanumeric characters, dashes or underscores.'
+    elif re.match(password_regex, password) is None:
+        error_message = 'Passwords must be between 1 to 128 characters in length and must have printable ASCII characters.'
+    
+    if error_message is None:
+        user = api.User.create(username, api.User.hash_password(password).decode("ascii"))
+        response.set_secure_cookie("user_id", str(user.uid))
+        response.redirect("/")
+    else:
+        response.write(template.render_page("register.html", {'message': error_message, "current_user": current_user}))
+        
 
 
 # check whether the selection is the lie
@@ -179,7 +179,6 @@ def vote(response):
             points_to_add = 20 - min(question_correct_votes, 10)
             print(points_to_add)
             current_user.add_points(points_to_add)
-        #response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You have already voted!'}))
     else:
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You have already voted!'}))
         
@@ -197,6 +196,11 @@ def count_votes(question_id):
 def question_handler(response, question_id):
     # the regex ensures that the question_id can't be negative
     current_user = get_user_from_response(response)
+    if current_user is None:
+        #user is not logged in
+        response.redirect('/login')
+        return
+
     question_id = int(question_id)
     question = api.Question.find(question_id)
     if question is None:
@@ -205,35 +209,30 @@ def question_handler(response, question_id):
     question_author = question.get_creator()
     
     #only display the voting results if the user has voted
-    current_user = get_user_from_response(response)
     context =  {'pageName' : 'View Post',"question" : question, "current_user": current_user, "count_votes": count_votes, "author": question_author, 'disabled': ''}
-    if current_user is not None:
-        if len(api.Vote.find_all(qid = question_id, voter_id = current_user.uid)) > 0:
-            #count the votes for the statements and store
-            count_statement0 = len(api.Vote.find_all(question_id, vote=0))
-            count_statement1 = len(api.Vote.find_all(question_id, vote=1))
-            count_statement2 = len(api.Vote.find_all(question_id, vote=2))
-            votes = [count_statement0, count_statement1, count_statement2]
+    if len(api.Vote.find_all(qid = question_id, voter_id = current_user.uid)) > 0:
+        #count the votes for the statements and store
+        count_statement0 = len(api.Vote.find_all(question_id, vote=0))
+        count_statement1 = len(api.Vote.find_all(question_id, vote=1))
+        count_statement2 = len(api.Vote.find_all(question_id, vote=2))
+        votes = [count_statement0, count_statement1, count_statement2]
 
-            total = sum(votes)
-            
-            score0 = str(round((votes[0] / total)*100))
-            score1 = str(round((votes[1] / total)*100))
-            score2 = str(round((votes[2] / total)*100))
+        total = sum(votes)
+        
+        score0 = str(round((votes[0] / total)*100))
+        score1 = str(round((votes[1] / total)*100))
+        score2 = str(round((votes[2] / total)*100))
 
-            context["voted"] = True
-            current_vote = api.Vote.find_all(qid = question_id, voter_id = current_user.uid)[0]
-            context["vote"] = current_vote
-            context["scores"] = [score0,score1,score2]
-        else:
-            #user is logged in but has not voted
-            context["voted"] = False
-        print(context)
-        response.write(template.render_page("q_individual.html", context ))
-                          
+        context["voted"] = True
+        current_vote = api.Vote.find_all(qid = question_id, voter_id = current_user.uid)[0]
+        context["vote"] = current_vote
+        context["scores"] = [score0,score1,score2]
     else:
-        #user is not logged in
-        response.redirect('/login')
+        #user is logged in but has not voted
+        context["voted"] = False
+    print(context)
+    response.write(template.render_page("q_individual.html", context ))
+
 
 def profile_handler(response, user_name): 
     current_user = get_user_from_response(response)
