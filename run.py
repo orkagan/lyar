@@ -58,35 +58,38 @@ def create_question(response):
 
 def insert_new_question(response):
     #recieves data from sent form and redirects to viewing new question
-    if any(response.get_field("statement_" + number) is None for number in ("one", "two", "three")):
-        response.redirect('/')
-        return # replace this with an else later, I'm kinda lazy -Michael
     current_user = get_user_from_response(response)
     name = response.get_field("name").strip()
     statement0 = response.get_field("statement_one").strip()
     statement1 = response.get_field("statement_two").strip()
     statement2 = response.get_field("statement_three").strip()
 
-    fields = [statement0, statement1, statement2]
-    
-    if not any(statement == "" for statement in (fields)):
-        if len(statement0) < 128 and  len(statement1) < 128 and len(statement2) < 128:
-            if name != "":
-                if statement0 != statement1 and statement1 != statement2 and statement0 != statement2:
-                    lie = response.get_field("lie")
-                    user_id = get_user_from_response(response).uid #the id of the user
-                    name = response.get_field("name").strip() #the name of the question
-                    api.Question.create(statement0, statement1, statement2, lie, user_id, name)
-                    response.redirect("/")
-                else:
-                    response.write(template.render_page("q_create.html", {"message" : 'Please enter 3 different statements', "current_user": current_user, "statement0" : statement0, "statement1" : statement1, "statement2" : statement2, "name" : name }))
-            else:
-                response.write(template.render_page("q_create.html", {"message" : 'Please enter question name', "current_user": current_user, "statement0" : statement0, "statement1" : statement1, "statement2" : statement2, "name" : name }))
-        else:
-            response.write(template.render_page("q_create.html",  {"message" : 'Character limit exceeded 128 characters' , "current_user": current_user, "statement0" : statement0, "statement1" : statement1, "statement2" : statement2, "name" : name }))
+    fields = [statement0, statement1, statement2, name]
+
+    # checks whether the user manually got to this page by URL editing
+    if any(field is None for field in fields) or current_user is None:
+        response.redirect('/')
+        return # replace this with an else later, I'm kinda lazy -Michael
+
+    error_message = None
+    if any(statement == "" for statement in (fields)):
+        error_message = 'Please enter 3 non-empty statements and a non-empty topic'
+    elif any(len(statement) > 128 for statement in (fields)):
+        error_message = 'Character limit exceeded 128 characters'
+    elif name == "":
+        error_message = 'Please enter question name'
+    elif statement0 == statement1 or statement1 == statement2 or statement0 == statement2:
+        error_message = 'Please enter 3 different statements'
+
+    if error_message is None:
+        lie = response.get_field("lie")
+        user_id = get_user_from_response(response).uid #the id of the user
+        name = response.get_field("name").strip() #the name of the question
+        api.Question.create(statement0, statement1, statement2, lie, user_id, name)
+        response.redirect("/")
     else:
-        response.write(template.render_page("q_create.html", {"message" : 'Please enter 3 non-empty statements' , "current_user": current_user, "statement0" : statement0, "statement1" : statement1, "statement2" : statement2 , "name" : name}))
-        
+        response.write(template.render_page("q_create.html",  {"message" : error_message, "current_user": current_user, "statement0" : statement0, "statement1" : statement1, "statement2" : statement2, "name" : name}))
+
 
 def login(response):
     current_user = get_user_from_response(response)
@@ -96,16 +99,13 @@ def login(response):
         if username is None or password is None:
             response.write(template.render_page("login.html", {"message": None, "current_user": current_user}))
         else:
-            if api.User.find(username) is not None:
-                user = api.User.find(username)
-                if api.User.hash_password(password) == user.password:
-                    print("Login successful.")
-                    response.set_secure_cookie("user_id", str(user.uid))
-                    response.redirect("/")
-                else:
-                    print("Login failed. Incorrect username or password.")
-                    response.write(template.render_page("login.html", {"message": "Username or password incorrect.", "current_user": current_user}))
+            user = api.User.find(username)
+            if user is not None and api.User.hash_password(password) == user.password:
+                print("Login successful.")
+                response.set_secure_cookie("user_id", str(user.uid))
+                response.redirect("/")    
             else:
+                print("Login failed. Incorrect username or password.")
                 response.write(template.render_page("login.html", {"message": "Username or password incorrect.", "current_user": current_user}))
     else:
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You are already logged in!'}))
@@ -136,22 +136,26 @@ def register(response):
         
         if username is None or password is None or confirm_password is None:
             response.write(template.render_page("register.html", {'message': None, "current_user": current_user}))
-        elif ' ' in username or ' ' in password or ' ' in confirm_password:
-            response.write(template.render_page("register.html", {'message': 'No spaces allowed!', "current_user": current_user}))
-        elif  username == '' or password == '' or confirm_password == '':
-            response.write(template.render_page("register.html", {'message': 'Username or password was empty or had a space!', "current_user": current_user}))
+            return
+
+        error_message = None
+        if username == '' or password == '' or confirm_password == '':
+            error_message = 'Username or password was empty!'
         elif api.User.find(username):
-            response.write(template.render_page("register.html", {'message': 'Username is taken already!', "current_user": current_user}))
+            error_message = 'Username is taken already!'
         elif password != confirm_password:
-            response.write(template.render_page("register.html", {'message': 'Passwords do not match!', "current_user": current_user}))
+            error_message = 'Passwords do not match!'
         elif re.match(username_regex, username) is None:
-            response.write(template.render_page("register.html", {'message': 'Usernames must be between 3 to 16 characters in length and must have alphanumeric characters, dashes or underscores.', "current_user": current_user}))
+            error_message = 'Usernames must be between 3 to 16 characters in length and must have alphanumeric characters, dashes or underscores.'
         elif re.match(password_regex, password) is None:
-            response.write(template.render_page("register.html", {'message': 'Passwords must be between 1 to 128 characters in length and must have printable ASCII characters.', "current_user": current_user}))
-        else:
+            error_message = 'Passwords must be between 1 to 128 characters in length and must have printable ASCII characters.'
+        
+        if error_message is None:
             user = api.User.create(username, api.User.hash_password(password).decode("ascii"))
             response.set_secure_cookie("user_id", str(user.uid))
             response.redirect("/")
+        else:
+            response.write(template.render_page("register.html", {'message': error_message, "current_user": current_user}))
     else:
         response.write(template.render_page("q_view.html", {"questions" : api.Question.find_all(), "count_votes": count_votes, "current_user": current_user, "message":'You are already logged in!'}))
 
