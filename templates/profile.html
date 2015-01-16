@@ -10,21 +10,21 @@
 					<fieldset>
 						<legend><a href="/question/{{ question.qid }}">{{ question.name }}</a></legend>
 						<ul>
-							<li>{% if current_user.uid != question.creator_id %}
+							<li>{% if current_user is not None and current_user.uid != question.creator_id %}
 								<input type="radio" name="user_input" id="OptionOne" value = "0" checked="checked">{% end if %}
 								<label for="OptionOne">{{ question.statement0 }}</label>
 							</li>
-							<li>{% if current_user.uid != question.creator_id %}
+							<li>{% if current_user is not None and current_user.uid != question.creator_id %}
 								<input type="radio" name="user_input" id="OptionTwo" value = "1" >{% end if %}
 								<label for="OptionTwo">{{ question.statement1 }}</label>
 							</li>
-							<li>{% if current_user.uid != question.creator_id %}
+							<li>{% if current_user is not None and current_user.uid != question.creator_id %}
 								<input type="radio" name="user_input" id="OptionThree" value = "2">{% end if %}
 								<label for="OptionThree">{{ question.statement2 }}</label>
 							</li>
 						</ul>
 						<input type="hidden" name="id" value="{{ question.qid }}">
-						{% if current_user.uid != question.creator_id %}<input type="submit">{% end if %}
+						{% if current_user is not None and current_user.uid != question.creator_id %}<input type="submit">{% end if %}
 					</fieldset>
 				</form>
 			</section>
